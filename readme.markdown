@@ -32,6 +32,13 @@ fakebuild lint
 
 *   no effort is made to parse / interpret f# code properly. results will be approximate.
 
+### answers to questions that no-one has asked (cf. "faq")
+
+*   isn't the target audience of this going to very small, and perhaps empty?
+    +   yep.
+*   why isn't this written in f#?
+    +   i like writing things in python.
+
 ### license
 
 *   BSD 2-clause
