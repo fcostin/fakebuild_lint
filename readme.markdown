@@ -38,6 +38,10 @@ fakebuild lint
     +   yep.
 *   why isn't this written in f#?
     +   i like writing things in python.
+*   do you recommend constructing build systems out of many `.fsx` scripts that `#load` each other?
+    +   no. the `#load` mechanism of f# scripts is lamentable, in that it does not like you `#load`-ing something twice, yet no mechanism like `#pragma once` or `#define` / `#ifndef` is provided.
+*   couldn't you work around that problem by not making your "library" `.fsx` scripts `#load` anything, and write a top-level "main" `.fsx` script that `#load`s all transitive dependencies exactly once in the correct order?
+    +   yes. yet that sounds strangely similar to what you might wish a build system to do for you.
 
 ### license
 
