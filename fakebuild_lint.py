@@ -105,6 +105,7 @@ def main():
         'returns nonzero if your build scripts have errors.', ]))
     parser.add_argument('root', type=str, default='.', nargs='?', help='root path of your project. all *.fsx files inside your project are assumed to be build scripts')
     parser.add_argument('--log-level', type=str, default='INFO', help='log level. DEBUG, INFO (default), WARN, ERROR, CRITICAL')
+    parser.add_argument('--pedantic', action='store_true', help='complain about more things')
     args = parser.parse_args()
 
     logger = make_logger()
@@ -146,13 +147,14 @@ def main():
         if not os.path.exists(dep.src):
             error('%r:%r loads non-existent file %r', dep.debug_file_name, dep.debug_line_number, dep.src)
 
-    # check to see if things are #load-ing other things without consuming their targets
-    for dep in deps:
-        # it should be the case that dep.dst references at least one target defined by dep.src. otherwise, why #load it?
-        if not targets[dep.src]: # assume if we're loading things that contain no targets, we must want them for some other reason.
-            continue
-        if not any(references_target(dep.dst, t) for t in targets[dep.src]):
-            error('%r loads %r without referencing any targets defined therein', dep.debug_file_name, dep.src)
+    if args.pedantic:
+        # check to see if things are #load-ing other things without consuming their targets
+        for dep in deps:
+            # it should be the case that dep.dst references at least one target defined by dep.src. otherwise, why #load it?
+            if not targets[dep.src]: # assume if we're loading things that contain no targets, we must want them for some other reason.
+                continue
+            if not any(references_target(dep.dst, t) for t in targets[dep.src]):
+                error('%r loads %r without referencing any targets defined therein', dep.debug_file_name, dep.src)
 
     # check to see that target names are globally unique
     all_target_names = defaultdict(set)
